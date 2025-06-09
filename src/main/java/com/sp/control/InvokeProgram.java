@@ -1,37 +1,40 @@
 package com.sp.control;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-
+import com.sp.entity.ConfigSession;
+import com.sp.model.ConstantValue;
+import com.sp.model.Program;
 import com.sp.service.ConfigService;
+import com.sp.service.ConfigServiceFactory;
+import com.sp.ui.pro.MainFrame;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.internal.win32.SHELLEXECUTEINFO;
 import org.eclipse.swt.internal.win32.TCHAR;
 import org.eclipse.swt.widgets.Composite;
-
-import com.sp.entity.ConfigSession;
-import com.sp.model.ConstantValue;
-import com.sp.model.Program;
-import com.sp.ui.MainFrame;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
+@Slf4j
 public class InvokeProgram extends Thread {
-    private static final Logger logger = LoggerFactory.getLogger(InvokeProgram.class);
-    private Composite composite = null;
-    private ConfigSession session = null;
-    private CTabItem tabItem = null;
-    ConfigService configService;
+
+    private final Display display;
+    private final Composite composite;
+    private final ConfigSession session;
+    private final CTabItem tabItem;
+    private final ConfigService configService;
 
     // Constructor:
-    public InvokeProgram(Composite composite, CTabItem tabItem, ConfigSession session, ConfigService configService) {
+    public InvokeProgram(Composite composite, Display display, CTabItem tabItem, ConfigSession session, ConfigService configService) {
         this.composite = composite;
+        this.display = display;
         this.tabItem = tabItem;
         this.session = session;
         this.configService = configService;
@@ -40,22 +43,17 @@ public class InvokeProgram extends Thread {
 
     @Override
     public void run() {
-        MainFrame.display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                invokePutty(session);
-            }
-        });
+        this.display.syncExec(() -> invokePutty(session));
     }
 
     public static void setWindowFocus(int hwnd) {
         // OS.SendMessage(hwnd, OS.WM_SETFOCUS, 0, 0);
         // OS.SetCapture(hwnd);
-//        OS.SetForegroundWindow(hwnd);
-//        OS.SetCursor(hwnd);
+        //        OS.SetForegroundWindow(hwnd);
+        //        OS.SetCursor(hwnd);
     }
 
-    public static void setMainWinowFous() {
+    public static void setMainWindowFocus() {
         int hwndMainWindow = isMainWindowRunning();
         setWindowFocus(hwndMainWindow);
     }
@@ -74,21 +72,24 @@ public class InvokeProgram extends Thread {
 
         String host = session.getHost();
         String port = session.getPort();
-        String user = session.getUser();
+        String user = session.getUsername();
         String password = session.getPassword();
         String file = session.getFile();
         String protocol = session.getProtocol() == null ? "-ssh -2" : session.getProtocol().getParameter();
-        String puttySession = session.getSession();
+        String puttySession = session.getPuttySession();
 
         if (session.getSessionType() == ConstantValue.PURE_PUTTY_SESSION) {
             // Putty session must the very first parameter to work well.
             args = " -load \"" + puttySession + "\"";
-            if (!user.isEmpty())
+            if (!user.isEmpty()) {
                 args += String.format(" -l \"%s\"", user);
-            if (!password.isEmpty())
+            }
+            if (!password.isEmpty()) {
                 args += String.format(" -pw \"%s\"", password);
-            if (!port.isEmpty())
+            }
+            if (!port.isEmpty()) {
                 args += String.format(" -P %s ", port);
+            }
         } else {
             args = String.format(" %s %s -l %s ", protocol, host, user);
 
@@ -96,13 +97,15 @@ public class InvokeProgram extends Thread {
                 args += String.format(" -pw \"%s\"", password);
             }
             // private key
-            if (!file.isEmpty())
+            if (!file.isEmpty()) {
                 args += String.format(" -i \"%s\"", file);
-            if (!port.isEmpty())
+            }
+            if (!port.isEmpty()) {
                 args += String.format(" -P %s ", port);
+            }
 
         }
-        logger.debug("Putty parameters: " + args);
+        log.debug("Putty parameters: {}", args);
 
         return args;
     }
@@ -114,23 +117,18 @@ public class InvokeProgram extends Thread {
      */
     public void invokePutty(ConfigSession session) {
         // Mount command-line Putty parameters:
-        String tabDisplayName = "session";
-        if (session.getSessionType() == ConstantValue.PURE_PUTTY_SESSION) {
-            tabDisplayName = session.getSession();
-        } else {
-            tabDisplayName = session.getHost();
-        }
-
         String args = setPuttyParameters(session);
 
+        String puttyPath = ConfigServiceFactory.getConfigService().getPutty();
+
         int hHeap = (int) OS.GetProcessHeap();
-        TCHAR buffer = new TCHAR(0, configService.getPuttyExecutable(), true);
+        TCHAR buffer = new TCHAR(0, puttyPath, true);
         int byteCount = buffer.length() * TCHAR.sizeof;
         int lpFile = (int) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         TCHAR buffer1 = new TCHAR(0, args, true);
         int byteCount1 = buffer1.length() * TCHAR.sizeof;
         int lpParameters = (int) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount1);
-        logger.debug("Putty:{}, args:{}",configService.getPuttyExecutable(),args);
+        log.debug("Putty:{}, args:{}", puttyPath, args);
         OS.MoveMemory(lpFile, buffer, byteCount);
         OS.MoveMemory(lpParameters, buffer1, byteCount1);
 
@@ -143,15 +141,16 @@ public class InvokeProgram extends Thread {
 
         boolean result = OS.ShellExecuteEx(info);
 
-        if (lpFile != 0)
+        if (lpFile != 0) {
             OS.HeapFree(hHeap, 0, lpFile);
+        }
 
-        if (lpParameters != 0)
+        if (lpParameters != 0) {
             OS.HeapFree(hHeap, 0, lpParameters);
+        }
 
         if (result == false) {
-            MessageDialog.openInformation(MainFrame.shell, "OPEN PUTTY ERROR",
-                    String.format("Failed cmd: %s %s", configService.getPuttyExecutable(), args));
+            MessageDialog.openInformation(MainFrame.shell, "OPEN PUTTY ERROR", String.format("Failed cmd: %s %s", puttyPath, args));
             return;
         }
 
@@ -167,7 +166,7 @@ public class InvokeProgram extends Thread {
                     Thread.sleep(500);
                     waitingForOperation -= 500;
                 } catch (InterruptedException e) {
-                    logger.error(ExceptionUtils.getStackTrace(e));
+                    log.error(ExceptionUtils.getStackTrace(e));
                 }
             }
         }
@@ -175,11 +174,11 @@ public class InvokeProgram extends Thread {
         int count = 15;
         int hwnd = 0;
         while (count > 0 && (hwnd = (int) OS.FindWindow(new TCHAR(0, "PuTTY", true), null)) == 0) {
-            int waitingTime = Integer.parseInt(configService.getSystemValue("WaitForInitTime"));
+            int waitingTime = configService.getWaitForInitTime();
             try {
                 Thread.sleep(waitingTime);
             } catch (InterruptedException e) {
-                logger.error(ExceptionUtils.getStackTrace(e));
+                log.error(ExceptionUtils.getStackTrace(e));
             }
             count--;
         }
@@ -188,8 +187,8 @@ public class InvokeProgram extends Thread {
             // MessageDialog.openError(MainFrame.shell, "OPEN PUTTY ERROR",
             //	String.format("Failed cmd: %s %s", MainFrame.configuration.getPuttyExecutable(), args));
             MessageBox messagebox = new MessageBox(MainFrame.shell, SWT.ICON_INFORMATION | SWT.OK);
-            messagebox.setText("OPEN PUTTY ERROR");
-            messagebox.setMessage(configService.getPuttyExecutable() + args);
+            messagebox.setText("打开 PUTTY 错误");
+            messagebox.setMessage(configService.getPutty() + args);
             if (messagebox.open() == SWT.OK) {
                 MainFrame.shell.setFocus();
             }
@@ -200,6 +199,7 @@ public class InvokeProgram extends Thread {
         OS.SetParent(hwnd, composite.handle);
         OS.SendMessage(hwnd, OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
+        String tabDisplayName = session.getSessionType() == ConstantValue.PURE_PUTTY_SESSION ? session.getPuttySession() : session.getHost();
         if (hwnd != 0) {
             tabItem.setText(tabDisplayName);
             tabItem.setData("hwnd", hwnd);
@@ -216,16 +216,19 @@ public class InvokeProgram extends Thread {
 
     public static void killPuttyWarningsAndErrs() {
         int hwndalert = (int) OS.FindWindow(null, new TCHAR(0, "PuTTY Security Alert", true));
-        if (hwndalert != 0)
+        if (hwndalert != 0) {
             killProcess(hwndalert);
+        }
 
         int hwndError = (int) OS.FindWindow(null, new TCHAR(0, "PuTTY Error", true));
-        if (hwndError != 0)
+        if (hwndError != 0) {
             killProcess(hwndError);
+        }
 
         hwndError = (int) OS.FindWindow(null, new TCHAR(0, "PuTTY Fatal Error", true));
-        if (hwndError != 0)
+        if (hwndError != 0) {
             killProcess(hwndError);
+        }
     }
 
     /**
@@ -244,11 +247,11 @@ public class InvokeProgram extends Thread {
                 cmd = program.getPath();
             }
 
-            logger.debug("Command line: " + cmd);
+            log.debug("Command line: {}", cmd);
 
             Runtime.getRuntime().exec(cmd);
         } catch (IOException ex) {
-            logger.error(ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
@@ -267,15 +270,14 @@ public class InvokeProgram extends Thread {
             cmd = program;
         }
 
-        logger.debug("Command line: " + cmd);
+        log.debug("Command line: " + cmd);
 
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (IOException ex) {
-            logger.error(ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
         }
     }
-
 
     /**
      * open path in windows explorer
@@ -291,12 +293,10 @@ public class InvokeProgram extends Thread {
             dirToOpen = new File(path);
             desktop.open(dirToOpen);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            log.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
         return true;
     }
-
-
 
 }

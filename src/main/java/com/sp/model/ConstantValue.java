@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.io.File;
 
 public class ConstantValue {
+
     public static String MAIN_WINDOW_TITLE = "Smart Putty";
     public static String MAIN_WINDOW_VERSION = SmartPuttyVersion.getSmartPuttyVersion();
 
@@ -16,11 +17,9 @@ public class ConstantValue {
     public static int SCREEN_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static int SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 
-
     public static int PURE_PUTTY_SESSION = 1;
     public static int SMART_PUTTY_SESSION = 2;
-
-
+    public static int OTP_PUTTY_SESSION = 3;
 
 }
 

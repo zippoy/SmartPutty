@@ -2,26 +2,35 @@ package com.sp.ui;
 
 import com.sp.dao.SmartSessionManager;
 import com.sp.entity.SystemConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.widgets.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class SystemConfigDialog implements SelectionListener, MouseListener {
-    private static final Logger logger = LoggerFactory.getLogger(SystemConfigDialog.class);
-    private SmartSessionManager smartSessionManager;
+
+    private final SmartSessionManager smartSessionManager;
     final private Shell dialog;
     Table table;
     TableEditor editor;
     int EDITABLECOLUMN = 2;
     Button saveButton;
-
 
     List<SystemConfig> cachedSystemConfigList = new ArrayList<>();  // TO be updated to DB cache
 
@@ -39,18 +48,17 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
 
     private void init() {
         Text text = new Text(dialog, SWT.LEFT);
-        text.setBounds(0,0,550,27);
-        text.setText("modify value by click value content in table, press Save to store configuration");
-
+        text.setBounds(0, 0, 550, 27);
+        text.setText("通过单击表中的值内容来修改值，按 保存 存储配置");
 
         saveButton = new Button(dialog, SWT.LEFT);
         saveButton.setBounds(0, 30, 80, 27);
-        saveButton.setText("Save");
+        saveButton.setText("保存");
         saveButton.setImage(MImage.saveImage);
         saveButton.addSelectionListener(this);
 
         table = new Table(dialog, SWT.BORDER);
-        dialog.setText("System Configuration Dialog");
+        dialog.setText("系统配置");
         dialog.setSize(350, 300);
 
         table = new Table(dialog, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
@@ -66,11 +74,11 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
 
         TableColumn tableKeyColumn = new TableColumn(table, SWT.NONE);
         tableKeyColumn.setWidth(200);
-        tableKeyColumn.setText("Key");
+        tableKeyColumn.setText("键");
 
         TableColumn tableValueColumn = new TableColumn(table, SWT.NONE);
         tableValueColumn.setWidth(300);
-        tableValueColumn.setText("Value");
+        tableValueColumn.setText("值");
 
         editor = new TableEditor(table);
         // The editor must have the same size as the cell and must
@@ -90,17 +98,13 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
         for (SystemConfig config : configList) {
             TableItem tableItem = new TableItem(table, SWT.NONE);
             tableItem.setData("config", config);
-            tableItem.setText(new String[]{config.getId().toString(), config.getKey(), config.getValue()});
+            tableItem.setText(new String[] { config.getId().toString(), config.getKey(), config.getValue() });
         }
     }
 
     private boolean isChangedConfig(SystemConfig old, String newVal) {
-        if (!StringUtils.equals(old.getValue(), newVal)) {
-            return true;
-        }
-        return false;
+        return !StringUtils.equals(old.getValue(), newVal);
     }
-
 
     @Override
     public void mouseDoubleClick(MouseEvent mouseEvent) {
@@ -123,8 +127,9 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
             // Clean up any previous editor control
             Control oldEditor = editor.getEditor();
 
-            if (oldEditor != null)
+            if (oldEditor != null) {
                 oldEditor.dispose();
+            }
 
             // Identify the selected row
             TableItem item = (TableItem) e.item;
@@ -132,14 +137,13 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
                 return;
             }
 
-
             // The control that will be the editor must be a child of the
             // Table
             Text newEditor = new Text(table, SWT.NONE);
             newEditor.setText(item.getText(EDITABLECOLUMN));
             newEditor.addModifyListener(me -> {
                 String newText = ((Text) editor.getEditor()).getText();
-//                smartSessionManager.update(new SystemConfig(oldConfig.getId(), oldConfig.getKey(), newText));
+                //                smartSessionManager.update(new SystemConfig(oldConfig.getId(), oldConfig.getKey(), newText));
                 editor.getItem().setText(EDITABLECOLUMN, newText);
             });
             newEditor.selectAll();
@@ -152,15 +156,13 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
                 if (isChangedConfig(oldConfig, item.getText(2))) {
                     cachedSystemConfigList.add(new SystemConfig(oldConfig.getId(), oldConfig.getKey(), item.getText(2)));
                     diffMsg += String.format("%s %s->%s", oldConfig.getKey(), oldConfig.getValue(), item.getText(2)) + "\n";
-                    logger.debug("changed id:{},key:{},value:{}", item.getText(0), item.getText(1), item.getText(2));
-
+                    log.debug("changed id:{},key:{},value:{}", item.getText(0), item.getText(1), item.getText(2));
                 }
-
             }
             if (!cachedSystemConfigList.isEmpty()) {
                 MessageBox messageBox = new MessageBox(this.dialog, SWT.ICON_QUESTION | SWT.WRAP | SWT.YES | SWT.NO);
-                messageBox.setMessage("Are you sure you want to save the changes?\n" + diffMsg);
-                messageBox.setText("Config Update");
+                messageBox.setMessage("是否确定要保存更改?\n" + diffMsg);
+                messageBox.setText("配置更新");
                 int response = messageBox.open();
                 if (response == SWT.YES) {
                     for (SystemConfig config : cachedSystemConfigList) {
@@ -169,7 +171,7 @@ public class SystemConfigDialog implements SelectionListener, MouseListener {
                 }
             } else {
                 MessageBox messagebox = new MessageBox(this.dialog, SWT.ICON_INFORMATION | SWT.OK);
-                messagebox.setMessage("Nothing changed, please edit value in table content then press save");
+                messagebox.setMessage("没有任何变化，请在表格内容中编辑值，然后点保存");
                 messagebox.open();
             }
         }

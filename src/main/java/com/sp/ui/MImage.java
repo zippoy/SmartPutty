@@ -1,10 +1,13 @@
 package com.sp.ui;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.eclipse.swt.graphics.Image;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MImage {
     public static Image mainImage;
     public static Image newImage;
@@ -31,9 +34,9 @@ public class MImage {
     public static Image puttyImage;
     public static Image dictImage;
     public static Image configImage;
+
     static {
         try {
-
             mainImage = new Image(MainFrame.display, new ClassPathResource("icon/main.png").getInputStream());
             newImage = new Image(MainFrame.display, new ClassPathResource("icon/new.png").getInputStream());
             openImage = new Image(MainFrame.display, new ClassPathResource("icon/open.png").getInputStream());
@@ -63,7 +66,4 @@ public class MImage {
         }
     }
 
-    public MImage() {
-
-    }
 }
