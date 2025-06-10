@@ -1,6 +1,4 @@
-package com.sp.model;
-
-import com.sp.control.SmartPuttyVersion;
+package com.zippoy.zshell.model;
 
 import java.awt.Toolkit;
 import java.io.File;
@@ -8,7 +6,8 @@ import java.io.File;
 public class ConstantValue {
 
     public static String MAIN_WINDOW_TITLE = "Smart Putty";
-    public static String MAIN_WINDOW_VERSION = SmartPuttyVersion.getSmartPuttyVersion();
+    //public static String MAIN_WINDOW_VERSION = SmartPuttyVersion.getSmartPuttyVersion();
+    public static String MAIN_WINDOW_VERSION = "1.0.0";
 
     public static String HOME_URL = System.getProperty("user.dir") + File.separator + "doc" + File.separator + "index.mht";
     public static String DEFAULT_PROTOCOL = "ssh";

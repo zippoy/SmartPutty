@@ -1,7 +1,9 @@
-package com.sp.ui;
+package com.zippoy.zshell.ui.dialog;
 
 import com.sp.dao.SmartSessionManager;
 import com.zippoy.zshell.entity.SystemConfig;
+import com.zippoy.zshell.ui.MainFrame;
+import com.zippoy.zshell.ui.component.MImage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
@@ -22,6 +24,12 @@ import org.eclipse.swt.widgets.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 系统配置对话框<br>
+ *
+ * @author zippoy
+ * @date 2025-06-06
+ */
 @Slf4j
 public class SystemConfigDialog implements SelectionListener, MouseListener {
 

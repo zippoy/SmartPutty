@@ -1,6 +1,6 @@
-package com.sp.service;
+package com.zippoy.zshell.config;
 
-import com.sp.entity.SystemConfig;
+import com.zippoy.zshell.entity.SystemConfig;
 import com.sp.ui.MainFrame;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * <br>
  *
- * @author qinkaid
+ * @author zippoy
  * @date 2025-06-09
  */
 public interface ConfigService {

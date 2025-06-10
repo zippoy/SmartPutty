@@ -33,8 +33,8 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="com.sp.entity.ConfigSession"/>
-        <mapping class="com.sp.entity.SystemConfig"/>
+        <mapping class="com.zippoy.zshell.entity.ConfigSession"/>
+        <mapping class="com.zippoy.zshell.entity.SystemConfig"/>
 
     </session-factory>
 

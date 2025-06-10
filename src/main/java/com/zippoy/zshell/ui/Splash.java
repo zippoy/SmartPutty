@@ -1,4 +1,4 @@
-package com.sp.ui;
+package com.zippoy.zshell.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -8,7 +8,8 @@ import java.awt.Graphics2D;
  * Created by eric on 2017/4/16.
  */
 public class Splash {
-    static void renderSplashFrame(Graphics2D g, String msg) {
+
+    public static void renderSplashFrame(Graphics2D g, String msg) {
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(120, 140, 200, 40);
         g.setPaintMode();

@@ -1,8 +1,8 @@
 package com.sp.dao;
 
-import com.sp.entity.ConfigSession;
-import com.sp.entity.SystemConfig;
-import com.sp.model.Protocol;
+import com.zippoy.zshell.entity.ConfigSession;
+import com.zippoy.zshell.entity.SystemConfig;
+import com.zippoy.zshell.model.Protocol;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

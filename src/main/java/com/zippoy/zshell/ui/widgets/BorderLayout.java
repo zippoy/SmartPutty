@@ -1,4 +1,4 @@
-package com.sp.model;
+package com.zippoy.zshell.ui.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;

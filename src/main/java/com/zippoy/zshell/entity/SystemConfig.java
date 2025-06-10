@@ -1,4 +1,4 @@
-package com.sp.entity;
+package com.zippoy.zshell.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

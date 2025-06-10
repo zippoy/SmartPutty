@@ -1,12 +1,62 @@
-bin/
-.idea/
 sessiondb.lck
 src/main/resources/database/sessiondb.properties
 SmartPutty.log
 SmartPutty.DB.properties
 SmartPutty.DB.script
+
+######################################################################
+# Build Tools
+
 .gradle/
 build/
-/dist/
+!gradle/wrapper/gradle-wrapper.jar
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+node_modules/
+bin/
 out/
 logs/
+
+######################################################################
+# IDE
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/*
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+######################################################################
+# Others
+*.log
+*.xml.versionsBackup
+*.swp
+*.bak
+*.rar
+*.zip
+*.tar
+*.tar.gz
+
+!*/build/*.java
+!*/build/*.html
+!*/build/*.xml
+/dependency.txt
+/mvn.txt

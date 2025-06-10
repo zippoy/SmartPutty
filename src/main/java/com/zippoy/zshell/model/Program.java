@@ -1,4 +1,4 @@
-package com.sp.model;
+package com.zippoy.zshell.model;
 
 /**
  * External programs used by "SmartPutty".

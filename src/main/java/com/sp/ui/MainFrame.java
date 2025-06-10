@@ -1,15 +1,16 @@
 package com.sp.ui;
 
-import com.sp.control.InvokeProgram;
+import com.zippoy.zshell.control.InvokeProgram;
 import com.sp.dao.SmartSessionManager;
-import com.sp.entity.ConfigSession;
-import com.sp.model.BorderData;
-import com.sp.model.BorderLayout;
-import com.sp.model.ConstantValue;
-import com.sp.model.Program;
-import com.sp.model.Protocol;
-import com.sp.service.ConfigService;
-import com.sp.service.DBConfigService;
+import com.zippoy.zshell.entity.ConfigSession;
+import com.zippoy.zshell.ui.Splash;
+import com.zippoy.zshell.ui.widgets.BorderData;
+import com.zippoy.zshell.ui.widgets.BorderLayout;
+import com.zippoy.zshell.model.ConstantValue;
+import com.zippoy.zshell.model.Program;
+import com.zippoy.zshell.model.Protocol;
+import com.zippoy.zshell.config.ConfigService;
+import com.zippoy.zshell.config.DBConfigService;
 import com.sp.utils.RegistryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -36,6 +37,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -51,8 +53,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import java.awt.Graphics2D;
 import java.awt.SplashScreen;
 import java.util.List;
-
-import static com.sp.ui.FrameHelper.setCompositeVisible;
 
 @Slf4j
 public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
@@ -757,6 +757,27 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         //		if (!bTransfer) {
         //			this.transferPopItem.dispose();
         //		}
+    }
+
+    /**
+     * Show or hide a group of components.
+     *
+     * @param visible
+     */
+    public static void setCompositeVisible(Composite composite, Shell shell, boolean visible) {
+        // Show/Hide all composite children:
+        for (Control control : composite.getChildren()) {
+            control.setVisible(visible);
+            control.setBounds(composite.getClientArea());
+            control.getParent().layout();
+        }
+
+        // Show/Hide composite:
+        composite.setVisible(visible);
+
+        // Re-layout main screen to maximize tabs zone:
+        composite.layout(true, true);
+        shell.layout(true, true);
     }
 
     /**

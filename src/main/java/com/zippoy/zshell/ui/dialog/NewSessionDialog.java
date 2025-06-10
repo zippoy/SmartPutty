@@ -1,9 +1,12 @@
-package com.sp.ui;
+package com.zippoy.zshell.ui.dialog;
 
 import com.sp.dao.SmartSessionManager;
 import com.zippoy.zshell.entity.ConfigSession;
 import com.zippoy.zshell.model.ConstantValue;
 import com.zippoy.zshell.model.Protocol;
+import com.zippoy.zshell.ui.Context;
+import com.zippoy.zshell.ui.MainFrame;
+import com.zippoy.zshell.ui.component.MImage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -22,6 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 新建会话对话框<br>
+ *
+ * @author zippoy
+ * @date 2025-06-06
+ */
 public class NewSessionDialog implements SelectionListener, MouseListener {
 
     private OpenSessionDialog sessionDialog = null;
@@ -206,7 +215,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                     sessionDialog.loadTable();
                 }
                 if (mainFrame != null) {
-                    mainFrame.addSession(null, session);
+                    Context.get().getTabManager().addSession(session);
                 }
             } else {
                 MessageDialog.openInformation(dialog, "警告", "必须设置：主机、账号、协议");

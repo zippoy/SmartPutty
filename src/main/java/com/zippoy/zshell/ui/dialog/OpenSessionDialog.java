@@ -1,7 +1,9 @@
-package com.sp.ui;
+package com.zippoy.zshell.ui.dialog;
 
 import com.sp.dao.SmartSessionManager;
 import com.zippoy.zshell.entity.ConfigSession;
+import com.sp.ui.MainFrame;
+import com.zippoy.zshell.ui.component.MImage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -18,6 +20,12 @@ import org.eclipse.swt.widgets.TableItem;
 
 import java.util.ArrayList;
 
+/**
+ * 打开会话对话框<br>
+ *
+ * @author zippoy
+ * @date 2025-06-06
+ */
 public class OpenSessionDialog implements SelectionListener, MouseListener {
     private MainFrame mainFrame = null;
     private Shell dialog = null;
@@ -106,12 +114,12 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         deleteButton.setToolTipText("删除选定的连接");
         deleteButton.addSelectionListener(this);
 
-        //		puttyWindow = new Button(dialog, SWT.LEFT);
-        //		puttyWindow.setBounds(X_POS, 103, 80, 27);
-        //		puttyWindow.setText("Putty");
-        //		puttyWindow.setImage(MImage.puttyImage);
-        //		puttyWindow.setToolTipText("Open selected connection in a single window");
-        //		puttyWindow.addSelectionListener(this);
+//		puttyWindow = new Button(dialog, SWT.LEFT);
+//		puttyWindow.setBounds(X_POS, 103, 80, 27);
+//		puttyWindow.setText("Putty");
+//		puttyWindow.setImage(MImage.puttyImage);
+//		puttyWindow.setToolTipText("Open selected connection in a single window");
+//		puttyWindow.addSelectionListener(this);
 
         connectButton = new Button(dialog, SWT.NONE);
         connectButton.setBounds(X_POS, 235, 80, 27);
@@ -163,14 +171,14 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     /**
      * Open a Putty session in a window outside program.
      */
-    //	private void OpenPutty(){
-    //		TableItem[] tableItems = table.getSelection();
-    //		if(tableItems!=null){
-    //			ConfigSession csession = smartSessionManager.queryCSessionBySession((ConfigSession) tableItems[0].getData("session"));
-    //			InvokeProgram.invokeSinglePutty(csession);
-    //			dialog.dispose();
-    //		}
-    //	}
+//	private void OpenPutty(){
+//		TableItem[] tableItems = table.getSelection();
+//		if(tableItems!=null){
+//			ConfigSession csession = smartSessionManager.queryCSessionBySession((ConfigSession) tableItems[0].getData("session"));
+//			InvokeProgram.invokeSinglePutty(csession);
+//			dialog.dispose();
+//		}
+//	}
 
     @Override
     public void widgetDefaultSelected(SelectionEvent arg0) {

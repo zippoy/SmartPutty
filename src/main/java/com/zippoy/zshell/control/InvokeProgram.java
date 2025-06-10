@@ -1,11 +1,11 @@
-package com.sp.control;
+package com.zippoy.zshell.control;
 
-import com.sp.entity.ConfigSession;
-import com.sp.model.ConstantValue;
-import com.sp.model.Program;
-import com.sp.service.ConfigService;
-import com.sp.service.ConfigServiceFactory;
-import com.sp.ui.pro.MainFrame;
+import com.zippoy.zshell.entity.ConfigSession;
+import com.zippoy.zshell.model.ConstantValue;
+import com.zippoy.zshell.model.Program;
+import com.zippoy.zshell.config.ConfigService;
+import com.zippoy.zshell.config.ConfigServiceFactory;
+import com.zippoy.zshell.ui.MainFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.dialogs.MessageDialog;

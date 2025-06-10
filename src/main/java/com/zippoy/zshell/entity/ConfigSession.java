@@ -1,7 +1,7 @@
-package com.sp.entity;
+package com.zippoy.zshell.entity;
 
-import com.sp.model.ConstantValue;
-import com.sp.model.Protocol;
+import com.zippoy.zshell.model.ConstantValue;
+import com.zippoy.zshell.model.Protocol;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

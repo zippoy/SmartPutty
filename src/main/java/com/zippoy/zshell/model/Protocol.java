@@ -1,4 +1,4 @@
-package com.sp.model;
+package com.zippoy.zshell.model;
 
 import lombok.Getter;
 
