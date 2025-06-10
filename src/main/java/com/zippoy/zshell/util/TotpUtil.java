@@ -18,7 +18,7 @@ public class TotpUtil {
 
     static {
         try {
-            totpGenerator = TOTPGenerator.fromURI(new URI(ConfigServiceFactory.getConfigService().getQotp()));
+            totpGenerator = TOTPGenerator.fromURI(new URI(ConfigServiceFactory.getConfigService().getOtp()));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

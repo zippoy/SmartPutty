@@ -106,8 +106,8 @@ public class PropertiesConfigService implements ConfigService {
     }
 
     @Override
-    public String getQotp() {
-        return props.getProperty(QOTP);
+    public String getOtp() {
+        return props.getProperty(OTP);
     }
 
     @Override

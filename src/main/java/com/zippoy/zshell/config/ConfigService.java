@@ -27,7 +27,7 @@ public interface ConfigService {
     String WINDOWS_BASE_DRIVE = "windowsBaseDrive";
     String USERNAME = "username";
     String PIN = "pin";
-    String QOTP = "qotp";
+    String OTP = "otp";
     String PASSPHRASE = "passphrase";
 
     List<SystemConfig> loadAllConfig();
@@ -56,7 +56,7 @@ public interface ConfigService {
 
     String getPin();
 
-    String getQotp();
+    String getOtp();
 
     String getPassphrase();
 

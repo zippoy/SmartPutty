@@ -208,7 +208,7 @@ public class DBConfigService implements ConfigService {
     }
 
     @Override
-    public String getQotp() {
+    public String getOtp() {
         return "";
     }
 
